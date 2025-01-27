@@ -11,8 +11,10 @@
 #include <omp.h>
 #include <random>
 
+
+
 #define N 10000
-#define chunk 2
+#define chunk 100
 int mostrar = 10;
 
 void imprimeArreglo(float* d)
@@ -61,8 +63,14 @@ int main()
     imprimeArreglo(b);
 
     int pedazos = chunk;
+    std::cout << "¿Cuántas iteraciones (máximo 100) desea asignar a cada hilo?. En caso de ingresar 0, se asignarán 100 por default.\n";
+    std::cin >> pedazos;
     int tid;
+    if (pedazos == 0 || pedazos > 100) {
+        pedazos = 100;
+    }
     
+    std::cout << "Se mostrarán las operaciones de las posiciones que son menor o igual al número de valores que ingresó para mostrar.\n";
 
     #pragma omp parallel for \
     shared(a,b,c,pedazos) private(i)\
@@ -76,13 +84,9 @@ int main()
         tid = omp_get_thread_num();
         if (i <= mostrar)
         {
-            std::cout << "Hilo " << tid << " abierto. Posición: " << i << std::endl;
+            std::cout << "Hilo " << tid << ". Posición: " << i << std::endl;
         }
         c[i] = a[i] + b[i];
-        if (i <= mostrar)
-        {
-            std::cout << "Hilo " << tid << " cerrado." << std::endl;
-        }
     }
    
 
